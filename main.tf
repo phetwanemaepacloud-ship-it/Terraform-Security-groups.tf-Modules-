@@ -5,9 +5,9 @@ resource "aws_security_group" "eice_security_group" {
   vpc_id      = var.vpc_id
 
 egress {
-  from_port = 22
-  to_port - 22
-  protocol = "tcp"
+  from_port   = 22
+  to_port     = 22
+  protocol    = "tcp"
   cidr_blocks = [var.vpc_cidr]
 }
 
@@ -24,10 +24,10 @@ resource "aws_security_group" "alb_security_group" {
 
 ingress {
   description = "HTTP"
-  from_port = 80
-  to_port   = 80
-  protocol  = "tcp"
-  cidr_blocks= ["0.0.0.0/0"]
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
 } 
 
 ingress {
@@ -39,9 +39,9 @@ cidr_block  = ["0.0.0.0/0"] ID.
 
 
 egress (
-  from_port = 0 
-  to_port   = 0
-  protocol = -1
+  from_port   = 0 
+  to_port     = 0
+  protocol    = -1
   cidr_blocks = ["0.0.0.0/0"]
 } 
 
@@ -155,18 +155,18 @@ resource "aws_security_group" "db_migrate_server_security_group" {
   vpc_id      = var.vpc_id 
   
   ingress {
-    description = "SSH from EICE"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    description     = "SSH from EICE"
+    from_port       = 22
+    to_port         = 22
+    protocol        = "tcp"
     security_groups = [aws_security_group.eice_security_group.id]
 } 
 
   egress {
-   from_port = 0
-   to_port   = 0
-   protocol  = -1
-   cidr_blocks["0.0.0.0/0"]
+   from_port   = 0
+   to_port     = 0
+   protocol    = -1
+   cidr_blocks = ["0.0.0.0/0"]
 } 
 
   tags = {
@@ -179,20 +179,20 @@ resource "aws_security_group" "db_migrate_server_security_group" {
 resource "aws_security_group" "database_security_group" {
   name        = "${var.environment) -${var.project_name}-db-sg" 
   description = "MySQL/Aurora from app and migration servers" 
-  vpc_id      =var.vpc_id 
+  vpc_id      = var.vpc_id 
 
   ingress { 
-    description = "MySQL/Aurora from app servers"
-    from_port  = 3306
-    to_port    = 3306
-    protocol   = "tcp"
+    description     = "MySQL/Aurora from app servers"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
     security_groups = [aws_security_group.app_server_security_group.id]
 
   ingress { 
-    description = "MySQL/Aurora from data migration server"
-    from_port = 3306
-    to_port   = 3306
-    protocol  = "tcp"
+    description     = "MySQL/Aurora from data migration server"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
     security_groups = [aws_security_group.db_migrate_server_security_group.id]
 } 
 
