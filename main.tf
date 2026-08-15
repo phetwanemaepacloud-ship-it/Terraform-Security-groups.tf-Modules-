@@ -8,7 +8,7 @@ egress {
   from_port = 22
   to_port - 22
   protocol = "tcp"
-  cidr_blocks = []
+  cidr_blocks = [var.vpc_cidr]
 }
 
 tags {
