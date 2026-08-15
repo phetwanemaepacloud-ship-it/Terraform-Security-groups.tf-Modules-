@@ -149,3 +149,35 @@ tags =
   Name = "${var.environment)-${var.project_name}-alb-sg"
   } 
 } 
+
+
+# Security group for data migration server
+resource "aws_security_group" "db_migrate_server_security_group" { 
+  name        = "${var.environment} ${var.project_name)-dms-sg"
+  description = "SSH from EICE"
+  vpc_id      = var.vpc_id 
+  
+  ingress {
+    description = "SSH from EICE"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    security_groups = [aws_security_group.eice_security_group.id]
+} 
+
+  egress {
+   from_port = 0
+   to_port   = 0
+   protocol  = -1
+   cidr_blocks["0.0.0.0/0"]
+} 
+
+  tags = {
+    Name = "${var.environment)-${var.project_name}-dms-sg"
+   } 
+} 
+
+# Security group for database (RDS, Aurora)
+resource "aws_security_group" "database_security_group" {
+  name        = "${var.environment)-$(var.project_name}-db-sg"
+  description = "MySQL/Aurora from app and migration servers" vpc_id
