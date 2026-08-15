@@ -84,7 +84,6 @@ tags =
   } 
 } 
 
-
 # Security group for Application Load Balancer 
 resource "aws_security_group" "alb_security_group" {
   name        = "${var.environment)-${var.project_name}-alb-sg" 
@@ -104,7 +103,6 @@ ingress {
   to_port     = 443
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-
 
 egress {
   from_port   = 0
@@ -150,7 +148,6 @@ tags =
   } 
 } 
 
-
 # Security group for data migration server
 resource "aws_security_group" "db_migrate_server_security_group" { 
   name        = "${var.environment} ${var.project_name)-dms-sg"
@@ -177,7 +174,36 @@ resource "aws_security_group" "db_migrate_server_security_group" {
    } 
 } 
 
-# Security group for database (RDS, Aurora)
+
+# Security group for database (RDS, Aurora) 
 resource "aws_security_group" "database_security_group" {
-  name        = "${var.environment)-$(var.project_name}-db-sg"
-  description = "MySQL/Aurora from app and migration servers" vpc_id
+  name        = "${var.environment) -${var.project_name}-db-sg" 
+  description = "MySQL/Aurora from app and migration servers" 
+  vpc_id      =var.vpc_id 
+
+  ingress { 
+    description = "MySQL/Aurora from app servers"
+    from_port  = 3306
+    to_port    = 3306
+    protocol   = "tcp"
+    security_groups = [aws_security_group.app_server_security_group.id]
+
+  ingress { 
+    description = "MySQL/Aurora from data migration server"
+    from_port = 3306
+    to_port   = 3306
+    protocol  = "tcp"
+    security_groups = [aws_security_group.db_migrate_server_security_group.id]
+} 
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+  tags = {
+    Name = "${var.environment)-$(vat.project_name)-db-sg"
+  }
+} 
